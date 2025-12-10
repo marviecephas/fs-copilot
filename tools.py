@@ -1,3 +1,5 @@
+from database import FORMULA_RULES_DATABASE
+
 def get_rules_from_db(category: str) -> Dict[str, Any]:
     """Retrieves all rules for a specific category from the database. To be worked"""
     category_cleaned = category.replace(" ", "_")
