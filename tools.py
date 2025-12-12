@@ -1,6 +1,5 @@
 from typing import List, Dict, Any
 from google.adk.tools.tool_context import ToolContext
-# Ensure you import your database variable correctly
 from database import FORMULA_RULES_DATABASE
 
 def get_rules_from_db(category: str) -> Any:
