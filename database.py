@@ -1,5 +1,4 @@
-FORMULA_RULES_DATABASE = 
-[
+FORMULA_RULES_DATABASE = [
     {
       "section": "A1.1.3",
       "text": "Entrants to Concept Class are to be designed based on being able to be manufactured and to then compete in FS Class in the immediate subsequent competition year.",
