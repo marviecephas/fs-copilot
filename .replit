@@ -1,0 +1,37 @@
+entrypoint = "main.py"
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-25_05"
+
+[unitTest]
+language = "python3"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix"]
+
+[deployment]
+run = ["python3", "main.py"]
+deploymentTarget = "cloudrun"
+
+[agent]
+expertMode = true
+
+[userenv]
+
+[userenv.shared]
+API_KEY = "AIzaSyAKWtyavUuibE-m_gVkZHCknavlsFw2i3I"
+TWILIO_ACCOUNT_SID = "AC2b61e93bc36be71065dcace7f945109c"
+TWILIO_AUTH_TOKEN = "80f742c1c02e7b6f9d14142b7cb4ba13"
+TWILIO_PHONE_NUMBER = "whatsapp:+14155238886"
+MY_PHONE_NUMBER = "whatsapp:+2347026373047"
+
+[[ports]]
+localPort = 8080
+externalPort = 80
+exposeLocalhost = true
+
+[[ports]]
+localPort = 9000
+externalPort = 9000
+exposeLocalhost = true
