@@ -40,7 +40,11 @@ async def run_agent_process(user_id: str, message_text: str) -> str:
     runner_session_id = str(uuid.uuid4())
     
     # Setup Session
-    await session_service.create_session(runner_session_id, user_id, APP_NAME)
+    await session_service.create_session(
+        session_id = runner_session_id,
+        user_id = user_id,
+        app_name = APP_NAME
+    )
 
     # Fetch History
     raw_history = memory.get_history(user_id)
@@ -68,13 +72,20 @@ async def run_agent_process(user_id: str, message_text: str) -> str:
     final_text = ""
 
     try:
-        async for event in agent_runner.run_async(user_id, runner_session_id, user_msg):
+        async for event in agent_runner.run_async(
+            user_id = user_id,
+            session_id = runner_session_id,
+            new_message = user_msg):
             if event.is_final_response() and event.content and event.content.parts:
                 part = event.content.parts[0]
                 if hasattr(part, 'text') and part.text:
                     final_text = part.text
         
-        await session_service.delete_session(runner_session_id, user_id, APP_NAME)
+        await session_service.delete_session(
+            session_id = runner_session_id,
+        user_id = user_id,
+        app_name = APP_NAME
+        )
 
         if final_text:
             memory.add_message(user_id, "model", final_text)
