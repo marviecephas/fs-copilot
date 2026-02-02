@@ -1,32 +1,51 @@
-from typing import List, Dict, Any
-from google.adk.tools.tool_context import ToolContext
-from database import FORMULA_RULES_DATABASE
+import json
 
-def get_rules_from_db(task: str) -> Any:
+def get_rules_from_db(query: str):
     """
-    Retrieves all rules where the category string appears in the rule text 
-    OR matches the rule section (e.g., 'CV1.1').
+    Smarter Search: Prioritizes pages with dense information,
+    strictly removes Table of Contents.
     """
-    relevant_rules = []
+    print(f"🔍 SEARCHING PDF for: '{query}'")
+    
+    try:
+        with open("knowledge_base.json", "r") as f:
+            rules_db = json.load(f)
+    except FileNotFoundError:
+        return "Error: Database not found."
 
-    keywords = task.split()
+    query_words = query.lower().split()
+    scored_results = []
 
-    # Loop through every rule in the database list
-    for rule in FORMULA_RULES_DATABASE:
-        # Check if category keyword is in the text (case-insensitive)
-        if task.lower() in rule["text"].lower():
-            relevant_rules.append(rule)
-        # Also check if it matches the section ID
-        elif task.lower() in rule["section"].lower():
-            relevant_rules.append(rule)
+    for page in rules_db:
+        content = page["text"].lower()
+        
+        # --- CODE TO REMOVE TABLE OF CONTENTS ---
+        # If the page mentions "Table of Contents" or has dotted lines "....."
+        if "table of contents" in content or "....." in content:
+            continue # Skip this page entirely!
+        # ----------------------------------------
+        
+        # 1. Count how many keywords appear on this page
+        score = 0
+        for word in query_words:
+            if len(word) > 3: # Ignore small words like "the", "for"
+                score += content.count(word)
 
-        else:
-            for word in keywords:
-                if len(word)>3 and word.lower() in rule["text"].lower():
-                    relevant_rules.append(rule)
+        # 2. If relevant, save it
+        if score > 0:
+            scored_results.append((score, page))
 
-    if relevant_rules:
-        return relevant_rules
-    else:
-        return {"error": f"No rules found for {task}"}
+    # 3. Sort by highest score (Most matches first!)
+    scored_results.sort(key=lambda x: x[0], reverse=True)
 
+    # 4. Return the top 3 BEST pages
+    if scored_results:
+        top_hits = scored_results[:10]
+        result_text = f"FOUND {len(scored_results)} MATCHES. TOP 10:\n\n"
+        for score, page in top_hits:
+            # Clean up newlines for easier reading
+            clean_text = page['text'].replace('\n', ' ') 
+            result_text += f"--- [Page {page['id']} | Score: {score}] ---\n{clean_text}...\n\n"
+        return result_text
+    
+    return "No relevant rules found."
