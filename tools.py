@@ -40,8 +40,8 @@ def get_rules_from_db(query: str):
 
     # 4. Return the top 3 BEST pages
     if scored_results:
-        top_hits = scored_results[:10]
-        result_text = f"FOUND {len(scored_results)} MATCHES. TOP 10:\n\n"
+        top_hits = scored_results[:7]
+        result_text = f"FOUND {len(scored_results)} MATCHES. TOP 7:\n\n"
         for score, page in top_hits:
             # Clean up newlines for easier reading
             clean_text = page['text'].replace('\n', ' ') 
