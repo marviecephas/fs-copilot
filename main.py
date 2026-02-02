@@ -90,11 +90,11 @@ async def run_agent_process(user_id: str, message_text: str) -> str:
         if final_text:
             memory.add_message(user_id, "model", final_text)
             return final_text
-        return "Task processed, but no text output."
+        return "Message processed, but no text output. Try again."
 
     except Exception as e:
         print(f"Agent Error: {e}")
-        return "I encountered an error."
+        return "I encountered an error. Please try again later."
 
 # --- 2. THE BACKGROUND WORKER (Twilio Only) ---
 async def process_and_reply(user_phone: str, message_text: str):
