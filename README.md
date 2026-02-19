@@ -1,106 +1,64 @@
 # 🏎️ Formula Student Co-Pilot (FS-AI)
 
-**Your AI Race Engineer, available 24/7 on WhatsApp.**
+**Your AI Race Engineer, optimized for precision and speed.**
 
-![Status](https://img.shields.io/badge/Status-Prototype-green)
+![Status](https://img.shields.io/badge/Status-Beta-orange)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
-![Stack](https://img.shields.io/badge/GenAI-Google%20Gemini-orange)
+![Engine](https://img.shields.io/badge/Search-Optimized%20RAG-red)
 
-## 📖 About The Project
+## 📖 Evolution of the Project
 
-**Formula Student Co-Pilot** is a Multi-Agent AI system designed to assist Formula Student / FSAE teams with engineering decisions, rule compliance, and design strategy. 
+**Formula Student Co-Pilot** has transitioned from a basic multi-agent setup to a high-performance **Retrieval-Augmented Generation (RAG)** system. It is designed to help FSAE/FS teams navigate complex technical regulations (like the 180+ page rulebook) without the latency or "hallucination" issues common in standard LLMs.
 
-Instead of searching through hundreds of pages of PDF regulations in the garage, engineers can simply text the bot via **WhatsApp** to get instant, cited answers regarding chassis constraints, material selection, and safety rules.
+The system now features **"Sweet Spot" Retrieval**, balancing context depth with API latency to ensure engineers get accurate, cited rules (like the 60° Tilt Test or Restrictor placement) within the 15-second WhatsApp timeout.
 
-Built using **Google's Agent Development Kit (ADK)** and **Gemini Models**, the system uses a "Team Manager" architecture to delegate tasks to specialized sub-agents.
+## ⚙️ Optimized Architecture
 
-## ⚙️ Architecture
+The system utilizes a **Shotgun Search & Full-Page Retrieval** pattern to ensure no technical details are missed at the bottom of pages:
 
-The system follows a **Hub-and-Spoke Multi-Agent Pattern**:
 
-```mermaid
-graph TD
-    User((User via WhatsApp)) <--> Twilio[Twilio API]
-    Twilio <--> FastAPI[FastAPI Server]
-    FastAPI <--> Manager[🕵️ Team Manager Agent]
-    
-    subgraph "The Brain (Google ADK)"
-        Manager -- Delegates --> Rules[📚 Rules Lawyer Agent]
-        Manager -- Delegates --> Strategy[🧠 Strategy Agent]
-        Rules -- Uses Tool --> VectorDB[(Rules Database)]
-        Strategy -- Uses Tool --> Calc[Eng. Calculations]
-end
-```
-* **Team Manager:** The interface agent that maintains conversation context and routes queries.
-* **Rules Lawyer:** Specialized agent with access to technical regulations (FSAE/FSG).
-* **Strategy Agent:** Provides engineering advice and design trade-off analysis.
 
-## ✨ Key Features
+### 🧠 The "Sweet Spot" Logic
+* **Context Window**: The system retrieves the top 6 most relevant rule sections to maximize accuracy.
+* **Density**: Each snippet provides ~3000 characters of text to ensure rules at the bottom of pages (like CV 1.7.2) are fully visible to the AI.
+* **Latency Control**: Optimized to process results and respond within the Twilio 15-second window to prevent connection timeouts.
 
-* **💬 WhatsApp Integration:** Frictionless interface for mechanics and engineers working in the garage.
-* **📚 Regulation RAG (Retrieval):** Instantly validates design ideas against specific rules (e.g., *"Is a 30mm steel tube allowed for the Main Hoop?"*).
-* **🧠 Context Aware:** Remembers previous design constraints discussed in the conversation.
-* **🔧 Tool Use:** Agents can perform lookups and calculations rather than just hallucinating answers.
+## ✨ Enhanced Features
+
+* **🛡️ Security Hardened**: Environment variables are strictly managed via Secrets to prevent API leaks and unauthorized access.
+* **📏 Technical Precision**: Specialized in identifying complex sequences, such as:
+    * **Naturally Aspirated**: Air flows through the Throttle Body, then the Restrictor.
+    * **Forced Induction**: The Restrictor is placed upstream of the Compressor and Throttle Body.
+* **🧪 Scrutineering Ready**: Detailed knowledge of the tilt test, including the 60° angle and zero-leakage requirements.
+
+
 
 ## 🛠️ Tech Stack
 
-* **LLM Orchestration:** Google GenAI (Gemini) via Google ADK
-* **Backend:** Python, FastAPI
-* **Messaging:** Twilio API (WhatsApp Sandbox)
-* **Hosting:** Replit (Development)
-* **Database:** SQLite (Prototyping) -> PostgreSQL (Planned)
+* **LLM**: Google Gemini 2.5 Flash Lite (Optimized for speed and context).
+* **Framework**: FastAPI with Google Agent Development Kit (ADK).
+* **Storage**: JSON Vectorized Rules Database.
+* **Deployment**: Render (24/7 Web Service).
 
-## 🚀 Getting Started
+## 🚀 Deployment (Production)
 
-### Prerequisites
-* Python 3.10+
-* Twilio Account (for WhatsApp Sandbox)
-* Google Cloud Project (for Gemini API Key)
+### 1. Environment Variables
+Ensure the following are set in your deployment environment (Never in `main.py`!):
+* `GOOGLE_API_KEY`: Fresh key from Google AI Studio.
+* `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN`: From your Twilio Console.
 
-### Installation
+### 2. Manual Deployment (Render)
+1.  Connect this GitHub Repo to **Render**.
+2.  Set Build Command: `pip install -r requirements.txt`.
+3.  Set Start Command: `uvicorn main:app --host 0.0.0.0 --port 10000`.
+4.  Update Twilio Webhook to your new Render URL.
 
-1.  **Clone the repository**
-    ```bash
-    git clone [https://github.com/yourusername/fs-copilot.git](https://github.com/yourusername/fs-copilot.git)
-    cd fs-copilot
-    ```
+## 📸 Real-World Interaction
 
-2.  **Install Dependencies**
-    ```bash
-    pip install fastapi uvicorn python-multipart google-genai twilio
-    ```
-
-3.  **Configure Environment Variables**
-    Create a `.env` file (or set Secrets in Replit):
-    ```ini
-    GOOGLE_API_KEY=your_gemini_key
-    TWILIO_ACCOUNT_SID=your_sid
-    TWILIO_AUTH_TOKEN=your_token
-    TWILIO_PHONE_NUMBER=whatsapp:+14155238886
-    ```
-
-4.  **Run the Server**
-    ```bash
-    uvicorn main:app --host 0.0.0.0 --port 8080
-    ```
-
-5.  **Connect Webhook:** Set your Twilio Sandbox URL to `https://<your-url>/twilio`.
-
-## 📸 Demo Interaction
-
-> **User:** "I want to use a 30mm steel tube for the Main Hoop. Is that allowed?"
+> **User**: "What is the sequence for a turbocharger restrictor?"
 >
-> **FS Co-Pilot:** "Checking Rule T3.2.2... That is **not compliant**.
-> The rule requires a minimum outer diameter of 38mm for the Main Hoop if using standard steel.
-> *Suggestion:* You could use 30mm for the Side Impact Structure, but for the Main Hoop, you must increase the diameter."
-
-## 🗺️ Roadmap
-
-- [x] Basic Conversation Loop (Team Manager)
-- [x] WhatsApp Integration (Twilio)
-- [x] Tool Implementation (Rules Lookup)
-- [ ] **Day 8:** Migrate Memory to PostgreSQL (Persistent Storage)
-- [ ] **Phase 2:** Image Recognition (Send a photo of a part to identify issues)
+> **FS Co-Pilot**: "Checking Rule CV 1.7.2... For turbocharged engines, the **restrictor must be upstream** of the compressor and the throttle body. 
+> **Correct Sequence**: Air Intake → 20mm Restrictor → Compressor → Throttle Body → Engine."
 
 ## 🤝 Contributing
 
