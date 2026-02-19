@@ -16,7 +16,7 @@ import memory
 # --- CONFIGURATION ---
 TWILIO_SID = os.environ.get("TWILIO_ACCOUNT_SID")
 TWILIO_TOKEN = os.environ.get("TWILIO_AUTH_TOKEN")
-TWILIO_NUMBER = os.environ.get("TWILIO_PHONE_NUMBER")
+TWILIO_NUMBER = os.environ.get("TWILIO_WHATSAPP_NUMBER")
 
 app = FastAPI()
 
