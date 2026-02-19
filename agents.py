@@ -9,9 +9,7 @@ from tools import get_rules_from_db
 
 load_dotenv()
 
-API_KEY = os.environ.get("API_KEY")
-if API_KEY:
-   os.environ["GOOGLE_API_KEY"] = API_KEY
+API_KEY = os.environ.get("GOOGLE_API_KEY")
 
 # 1. Update Model to 2.5 Flash Lite
 llm_brain = Gemini(
