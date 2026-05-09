@@ -102,8 +102,15 @@ async def process_and_reply(user_phone: str, message_text: str):
     Wrapper function: Calls the Brain, then texts the user via Twilio.
     """
     print(f"⚙️ BACKGROUND: Processing for {user_phone}...")
-    
+
+
+    client.messages.create(
+        from_=TWILIO_NUMBER, 
+        body="I received your message! Processing...", 
+        to=user_phone
+    )
     # CALL THE BRAIN
+    
     response_text = await run_agent_process(user_phone, message_text)
     
     # SEND THE SMS
