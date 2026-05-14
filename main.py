@@ -104,11 +104,14 @@ async def process_and_reply(user_phone: str, message_text: str):
     print(f"⚙️ BACKGROUND: Processing for {user_phone}...")
 
 
-    Client.messages.create(
+    try:
+      twilio_client.messages.create(
         from_=TWILIO_NUMBER, 
         body="I received your message! Processing...", 
         to=user_phone
     )
+    except Exception as e:
+      printf"❌ Initial Twilio Error: {e}")
     # CALL THE BRAIN
     
     response_text = await run_agent_process(user_phone, message_text)
