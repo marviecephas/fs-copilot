@@ -111,7 +111,7 @@ async def process_and_reply(user_phone: str, message_text: str):
         to=user_phone
     )
     except Exception as e:
-      printf"❌ Initial Twilio Error: {e}")
+      print(f"❌ Initial Twilio Error: {e}")
     # CALL THE BRAIN
     
     response_text = await run_agent_process(user_phone, message_text)
