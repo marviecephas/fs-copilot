@@ -104,7 +104,7 @@ async def process_and_reply(user_phone: str, message_text: str):
     print(f"⚙️ BACKGROUND: Processing for {user_phone}...")
 
 
-    client.messages.create(
+    Client.messages.create(
         from_=TWILIO_NUMBER, 
         body="I received your message! Processing...", 
         to=user_phone
