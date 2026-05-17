@@ -94,7 +94,7 @@ async def run_agent_process(user_id: str, message_text: str) -> str:
 
     except Exception as e:
         print(f"Agent Error: {e}")
-        return "I encountered an error. Please try again later."
+        return "Sorry, my brain is a bit tired at the moentlease try again later."
 
 # --- 2. THE BACKGROUND WORKER (Twilio Only) ---
 async def process_and_reply(user_phone: str, message_text: str):
