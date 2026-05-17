@@ -90,7 +90,7 @@ async def run_agent_process(user_id: str, message_text: str) -> str:
         if final_text:
             memory.add_message(user_id, "model", final_text)
             return final_text
-        return "I processed your message, but could not get a text output. Try again."
+        return "I processed your message, but could not get a text output. Please try again."
 
     except Exception as e:
         print(f"Agent Error: {e}")
